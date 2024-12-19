@@ -1,8 +1,12 @@
-'user client';
+'use client';
+
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
-  return (
-    <header className='w-screen flex flex-row justify-between p-4 bg-brown text-white'>
+  const pathname = usePathname();
+  console.log('pathname:', pathname);
+  return pathname === '/login' ? null : (
+    <header className='w-full flex flex-row justify-between p-4 bg-brown text-white'>
       <div className='flex flex-auto w-64 justify-start items-center'>
         <div>logo</div>
         <ul className='flex flex-row cursor-pointer font-bold'>

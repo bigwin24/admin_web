@@ -95,49 +95,55 @@ export const authConfig = {
       } else {
         console.log('[Jwt Callback]token_refresh', token);
         // Subsequent logins, but the `access_token` has expired, try to refresh it
-        if (!token.refresh_token) throw new TypeError('Missing refresh_token');
+        // if (!token.refresh_token) throw new TypeError('Missing refresh_token');
 
-        try {
-          // The `token_endpoint` can be found in the provider's documentation. Or if they support OIDC,
-          // at their `/.well-known/openid-configuration` endpoint.
-          // i.e. https://accounts.google.com/.well-known/openid-configuration
+        // try {
+        //   // The `token_endpoint` can be found in the provider's documentation. Or if they support OIDC,
+        //   // at their `/.well-known/openid-configuration` endpoint.
+        //   // i.e. https://accounts.google.com/.well-known/openid-configuration
 
-          const response = await fetch(
-            'https://api.momstart.co.kr/v2/users/refresh',
-            {
-              headers: { 'Content-Type': 'application/json' },
-              method: 'POST',
-              body: JSON.stringify({
-                refresh_token: token.refresh_token!,
-              }),
-            }
-          );
-          console.log('token_refresh_: ', response);
+        //   console.log(
+        //     '[Jwt Callback]token_refresh2',
+        //     JSON.stringify({
+        //       refresh_token: token.refresh_token!,
+        //     })
+        //   );
+        //   const response = await fetch(
+        //     'https://api.momstart.co.kr/v2/users/refresh',
+        //     {
+        //       headers: { 'Content-Type': 'application/json' },
+        //       method: 'POST',
+        //       body: JSON.stringify({
+        //         refresh_token: token.refresh_token!,
+        //       }),
+        //     }
+        //   );
 
-          const tokensOrError = await response.json();
+        //   const tokensOrError = await response.json();
 
-          if (!response.ok) throw tokensOrError;
+        //   if (!response.ok) throw tokensOrError;
 
-          const newTokens = tokensOrError as {
-            access_token: string;
-            expires_in: number;
-            refresh_token?: string;
-          };
+        //   const newTokens = tokensOrError as {
+        //     access_token: string;
+        //     expires_in: number;
+        //     refresh_token?: string;
+        //   };
 
-          token.access_token = newTokens.access_token;
-          token.expires_at = Math.floor(
-            Date.now() / 1000 + newTokens.expires_in
-          );
-          // Some providers only issue refresh tokens once, so preserve if we did not get a new one
-          if (newTokens.refresh_token)
-            token.refresh_token = newTokens.refresh_token;
-          return token;
-        } catch (error) {
-          console.error('Error refreshing access_token', error);
-          // If we fail to refresh the token, return an error so we can handle it on the page
-          token.error = 'RefreshTokenError';
-          return token;
-        }
+        //   token.access_token = newTokens.access_token;
+        //   token.expires_at = Math.floor(
+        //     Date.now() / 1000 + newTokens.expires_in
+        //   );
+        //   // Some providers only issue refresh tokens once, so preserve if we did not get a new one
+        //   if (newTokens.refresh_token)
+        //     token.refresh_token = newTokens.refresh_token;
+        //   return token;
+        // } catch (error) {
+        //   console.error('Error refreshing access_token', error);
+        //   // If we fail to refresh the token, return an error so we can handle it on the page
+        //   token.error = 'RefreshTokenError';
+        //   return token;
+        // }
+        return token;
       }
     },
     async session({ session, token }) {
