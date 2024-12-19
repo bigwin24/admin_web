@@ -12,7 +12,16 @@ declare module 'next-auth' {
       exp: number;
       jti: string;
     };
-    accessToken: string;
-    refreshToken: string;
+    access_token: string;
+    refresh_token: string;
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    access_token: string;
+    expires_at: number;
+    refresh_token?: string;
+    error?: 'RefreshTokenError';
   }
 }

@@ -1,13 +1,7 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { authConfig } from './auth.config';
+import { authConfig } from '@/auth.config';
 import { z } from 'zod';
-import type { User } from '@/app/lib/definitions';
-
-type ExtendedUser = User & {
-  accessToken: string;
-  refreshToken: string;
-};
 
 async function getUser(token: string): Promise<any | undefined> {
   try {
@@ -46,8 +40,8 @@ async function login(
       const user = await getUser(result.access_token);
       return {
         ...user,
-        accessToken: result.access_token,
-        refreshToken: result.refresh_token,
+        access_token: result.access_token,
+        refresh_token: result.refresh_token,
       };
     }
   } catch (error) {
@@ -66,7 +60,7 @@ export const { auth, signIn, signOut } = NextAuth({
       // e.g. domain, username, password, 2FA token, etc.
       // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
+        username: { label: 'Username', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
@@ -99,35 +93,4 @@ export const { auth, signIn, signOut } = NextAuth({
   //   strategy: 'jwt', // JSON Web Token 사용
   //   maxAge: 60 * 60 * 24, // 세션 만료 시간(sec)
   // },
-  callbacks: {
-    async jwt({ token, user }) {
-      console.log('Jwt Callback()');
-      console.log(token);
-      console.log(user);
-      // Persist the OAuth access_token and or the user id to the token right after signin
-      if (user) {
-        const extendedUser = user as ExtendedUser;
-        return {
-          ...token,
-          accessToken: extendedUser.accessToken,
-          refreshToken: extendedUser.refreshToken,
-        };
-      }
-      // user 객체가 없다는 것은 단순 세션 조회를 위한 요청
-      // console.log(token);
-      return token;
-    },
-    async session({ session, token }) {
-      console.log('Session Callback()');
-      console.log(session);
-      console.log(token);
-      //4.Jwt Callback으로부터 반환받은 token값을 기존 세션에 추가한다
-      if (token) {
-        session.accessToken = token.accessToken as string;
-        session.refreshToken = token.refreshToken as string;
-      }
-      console.log(session);
-      return session;
-    },
-  },
 });
