@@ -6,11 +6,11 @@ export default function Header() {
   const pathname = usePathname();
   console.log('pathname:', pathname);
   return pathname === '/login' ? null : (
-    <header className='w-full flex flex-row justify-between p-4 bg-brown text-white'>
+    <header className='w-full h-full flex flex-row justify-between p-4 bg-brown text-white'>
       <div className='flex flex-auto w-64 justify-start items-center'>
         <div>logo</div>
         <ul className='flex flex-row cursor-pointer font-bold'>
-          <li className='px-4'>환자관리</li>
+          <li className='px-4 text-base'>환자관리</li>
           <li className='px-4'>회원관리</li>
           <li className='px-4'>설정</li>
         </ul>

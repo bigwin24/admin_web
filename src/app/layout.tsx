@@ -31,10 +31,12 @@ export default async function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased w-full h-screen`}
       >
-        <Header />
-        {children}
+        <div className='h-16'>
+          <Header />
+        </div>
+        <div className='h-[calc(100vh-4rem)] bg-gray-200'>{children}</div>
       </body>
     </html>
   );

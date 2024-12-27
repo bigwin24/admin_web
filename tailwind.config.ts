@@ -13,6 +13,10 @@ export default {
         foreground: 'var(--foreground)',
         brown: '#533C2A',
       },
+      height: {
+        '1/10': '10%',
+        '9/10': '100%',
+      },
       flex: {
         '2': '2 2 0%',
         '3': '3 3 0%',

@@ -88,7 +88,7 @@ export const authConfig = {
           expires_at: euser.expires_at as number,
           refresh_token: euser.refresh_token as string,
         };
-      } else if (Date.now() < token.expires_at * 1000) {
+      } else if (Date.now() < token.exp! * 1000) {
         console.log('[Jwt Callback]token_expires', token);
         // Subsequent logins, but the `access_token` is still valid
         return token;

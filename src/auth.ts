@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from '@/auth.config';
+import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 async function getUser(token: string): Promise<any | undefined> {
@@ -33,7 +34,18 @@ async function login(
       headers: { 'Content-Type': 'application/json' },
     });
     const result = await res.json();
-    console.log('login: ', result);
+
+    const cookieStore = await cookies();
+    const setCookie = result['access_token'];
+
+    console.log('setCookiesetCookie: ', setCookie);
+
+    if (setCookie) {
+      // 브라우저에 쿠키를 심어주기
+      cookieStore.set('access_token', setCookie, {
+        httpOnly: true,
+      });
+    }
 
     // If no error and we have user data, return it
     if (res.ok) {
