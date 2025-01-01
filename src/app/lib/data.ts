@@ -2,6 +2,7 @@ import { unstable_noStore as noStore } from 'next/cache';
 import { getToken } from './getToken';
 import { NextApiRequest } from 'next';
 import { cookies } from 'next/headers';
+import { auth } from '@/auth';
 
 export async function fetchAllUser() {
   // Add noStore() here to prevent the response from being cached.
@@ -22,18 +23,23 @@ export async function fetchAllUser() {
   const url = `${baseUrl}?${queryString}`;
   const cookieStore = await cookies();
   const cookie = cookieStore.get('access_token');
+
+  const session = await auth();
+
   try {
     const res = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${cookie?.value}`,
+        Authorization: `Bearer ${session?.accessToken}`,
       },
     });
 
-    const result = await res.json();
-    console.log('[fetchAllUser] Success');
-    return result;
+    if (res.ok) {
+      const result = await res.json();
+      console.log('[fetchAllUser] Success');
+      return result;
+    }
   } catch (error) {
     console.log('[fetchAllUser] Error: ', error);
   }

@@ -26,7 +26,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
-  console.log('main layout session: ', session);
+  // console.log('main layout session: ', session);
 
   return (
     <html lang='en'>
@@ -34,7 +34,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-full h-screen`}
       >
         <div className='h-16'>
-          <Header />
+          <Header session={session} />
         </div>
         <div className='h-[calc(100vh-4rem)] bg-gray-200'>{children}</div>
       </body>
