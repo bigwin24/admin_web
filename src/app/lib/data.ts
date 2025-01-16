@@ -39,6 +39,8 @@ export async function fetchAllUser() {
       const result = await res.json();
       console.log('[fetchAllUser] Success');
       return result;
+    } else {
+      console.log('[fetchAllUser] Fail: ', res.status);
     }
   } catch (error) {
     console.log('[fetchAllUser] Error: ', error);

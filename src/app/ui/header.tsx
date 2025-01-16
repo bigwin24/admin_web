@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { signOut } from '@/auth';
 
 export default function Header({ session }: any) {
@@ -12,7 +13,9 @@ export default function Header({ session }: any) {
       <div className='flex flex-auto w-64 justify-start items-center'>
         <div>logo</div>
         <ul className='flex flex-row cursor-pointer font-bold'>
-          <li className='px-4 text-base'>환자관리</li>
+          <li className='px-4 text-base'>
+            <Link href='/'>환자관리</Link>
+          </li>
           <li className='px-4'>회원관리</li>
           <li className='px-4'>설정</li>
         </ul>
