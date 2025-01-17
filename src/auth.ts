@@ -208,7 +208,7 @@ import { z } from 'zod';
 
 async function getUser(token: string): Promise<any | undefined> {
   try {
-    const res = await fetch('https://api.momstart.co.kr/v2/users/me', {
+    const res = await fetch(`${process.env.BASIC_URL}/users/me`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -230,7 +230,7 @@ async function login(
   password: string
 ): Promise<any | undefined> {
   try {
-    const res = await fetch('https://api.momstart.co.kr/v2/accounts/login', {
+    const res = await fetch(`${process.env.BASIC_URL}/accounts/login`, {
       method: 'POST',
       body: JSON.stringify({ username: email, password }),
       headers: { 'Content-Type': 'application/json' },
