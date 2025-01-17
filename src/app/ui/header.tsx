@@ -22,7 +22,7 @@ export default function Header({ session }: any) {
       </div>
       <div className='flex flex-auto w-24 justify-end items-center'>
         <div>환자검색</div>
-        <div>{session.user.name}</div>
+        {/* <div>{session.user.name}</div> */}
         {/* <form
           action={async () => {
             'use server';
