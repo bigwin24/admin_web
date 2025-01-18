@@ -33,9 +33,8 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-full h-screen`}
       >
-        <div className='h-16'>
-          <Header session={session} />
-        </div>
+        <Header session={session} />
+
         <div className='h-[calc(100vh-4rem)] bg-gray-200'>{children}</div>
       </body>
     </html>

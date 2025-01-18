@@ -1,8 +1,5 @@
 import { unstable_noStore as noStore } from 'next/cache';
-import { getToken } from './getToken';
-import { NextApiRequest } from 'next';
 import { cookies } from 'next/headers';
-import { auth } from '@/auth';
 
 export async function fetchAllUser() {
   // Add noStore() here to prevent the response from being cached.
@@ -13,7 +10,7 @@ export async function fetchAllUser() {
   // Don't do this in production :)
 
   console.log('[fetchAllUser] Fetching...');
-  const baseUrl = 'https://api.momstart.co.kr/v2/mnts/users/all';
+  const baseUrl = `${process.env.BASIC_URL}/mnts/users/all`;
   const params = {
     page: '-1',
     order: 'name',
@@ -21,17 +18,16 @@ export async function fetchAllUser() {
 
   const queryString = new URLSearchParams(params).toString();
   const url = `${baseUrl}?${queryString}`;
-  const cookieStore = await cookies();
-  const cookie = cookieStore.get('access_token');
 
-  const session = await auth();
+  const cookie = await cookies();
+  const token = cookie.get('accessToken')?.value || null;
 
   try {
     const res = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${session?.accessToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 

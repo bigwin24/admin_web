@@ -1,31 +1,31 @@
-import { match } from 'assert';
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
-export default async function middleware(request: NextRequest) {
-  let cookie = request.cookies.get('accessToken');
-  if (cookie) {
-    console.log('middleware: ', cookie);
-  } else {
-    console.log('middleware2: ', request.url);
-    return NextResponse.redirect(new URL("/login", request.url));
-  };
-  // // 프론트 서버 요청을 완료하기 전 쿠키에서 accessToken을 가져와서 만료되었는지 확인
-  // let cookie = request.cookies.get("accessToken");
-  // if (cookie && isTokenExpired(cookie.value)) {
-  //   const result = await getAccessTokenWithRefreshToken();
+export async function middleware(req: NextRequest) {
+  const cookie = await cookies();
+  const token = cookie.get('accessToken')?.value || null;
+  const refresh_token = cookie.get('refreshToken')?.value || null;
 
-  //   if (result !== "EXPIRED") {
-  //     const response = NextResponse.next();
-  //     response.cookies.set("accessToken", result.accessToken);
-  //     return response;
-  //   } else {
-  //     return NextResponse.redirect(new URL("/login", request.url));
-  //   }
-  // }
+  const { pathname, origin } = req.nextUrl;
+
+  console.log('middleware: ', pathname, origin);
+
+  // 로그인하지 않았으면 로그인 페이지로 리디렉션
+  if (!token && pathname !== '/login') {
+    // 로그인 후 리디렉션할 URL을 쿼리 파라미터로 전달
+    const loginUrl = new URL('/login', origin);
+    loginUrl.searchParams.set('callbackUrl', pathname); // 사용자가 원래 요청한 경로를 쿼리 파라미터로 전달
+    return NextResponse.redirect(loginUrl);
+  }
+  if (token) {
+    const atoken = cookie.get('accessToken');
+    console.log('access_token: ', atoken);
+  }
+
+  return NextResponse.next(); // 나머지 요청은 그대로 처리
 }
 
 export const config = {
-  // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-  // matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
-  matcher: ['/']
+  matcher: ['/', '/login', '/detail/:path*', '/dashboard', '/profile/:path*'], // 해당 경로들에만 미들웨어 적용
+  // matcher: ['*'], // 모든 경로에서 미들웨어 적용
 };

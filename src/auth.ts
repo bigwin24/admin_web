@@ -1,9 +1,8 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-// Your own logic for dealing with plaintext password strings; be careful!
-// import { saltAndHashPassword } from '@/utils/password';
 import { z } from 'zod';
-import { cookies } from 'next/headers'
+import { cookies } from 'next/headers';
+import { authConfig } from './auth.config';
 
 async function getUser(token: string): Promise<any | undefined> {
   try {
@@ -41,14 +40,20 @@ async function login(
     if (res.ok) {
       const cookieStore = await cookies();
       cookieStore.set({
+        path: '/',
+        maxAge: 60 * 60 * 1,
         name: 'accessToken',
         value: result.access_token,
         httpOnly: true,
-      })
+        secure: process.env.NODE_ENV === 'production',
+      });
       cookieStore.set({
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30, // 30일,
         name: 'refreshToken',
         value: result.refresh_token,
-      })
+        secure: process.env.NODE_ENV === 'production',
+      });
 
       const user = await getUser(result.access_token);
 
@@ -66,20 +71,14 @@ async function login(
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  ...authConfig,
   providers: [
     Credentials({
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
-      credentials: {
-        email: {},
-        password: {},
-      },
       authorize: async (credentials) => {
         console.log('credentials:', credentials);
         const parsedCredentials = z
           .object({ email: z.string().email(), password: z.string().min(6) })
           .safeParse(credentials);
-
         console.log('parsedCredentials: ', parsedCredentials);
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
@@ -88,10 +87,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (!res) return null;
           return res;
         }
-
         return null;
       },
     }),
   ],
+  callbacks: {
+    authorized: async ({ auth }) => {
+      console.log('callbacks: ', auth);
+      // Logged in users are authenticated, otherwise redirect to login page
+      return auth === null ? false : true;
+    },
+    redirect: async ({ url, baseUrl }) => {
+      console.log('리다이렉트: ', url, baseUrl);
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      if (url) {
+        const { search, origin } = new URL(url);
+        const callbackUrl = new URLSearchParams(search).get('callbackUrl');
+        if (callbackUrl)
+          return callbackUrl.startsWith('/')
+            ? `${baseUrl}${callbackUrl}`
+            : callbackUrl;
+        if (origin === baseUrl) return url;
+      }
+      return baseUrl;
+    },
+  },
 });
-
