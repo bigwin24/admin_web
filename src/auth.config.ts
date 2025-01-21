@@ -15,7 +15,7 @@ export const authConfig = {
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: '/login',
-    signOut: '/logout',
+    signOut: '/api/auth/logout',
   },
 
   // Enable debug messages in the console if you are having problems

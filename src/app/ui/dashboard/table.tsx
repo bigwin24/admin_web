@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { User } from '@/app/lib/definitions';
+import { User } from '@/app/@lib/definitions';
 
 interface Props {
   users?: User[];

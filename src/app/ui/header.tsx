@@ -1,9 +1,5 @@
-// 'use client';
-
-// import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { signOut } from '@/auth';
-import { auth } from '@/auth';
+import LogoutForm from '@/app/ui/logout-form';
 
 export default async function Header({ session }: any) {
   console.log('header session: ', session);
@@ -24,14 +20,7 @@ export default async function Header({ session }: any) {
         <div className='flex flex-auto w-24 justify-end items-center'>
           <div>환자검색</div>
           <div>{session.user.name}</div>
-          <form
-            action={async () => {
-              'use server';
-              await signOut();
-            }}
-          >
-            <button>로그아웃</button>
-          </form>
+          <LogoutForm />
         </div>
       </header>
     </div>

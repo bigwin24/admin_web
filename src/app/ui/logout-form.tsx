@@ -1,14 +1,11 @@
-import { signOut } from '@/auth';
+'use client';
 
-export default function LogoutForm() {
-  return (
-    <form
-      action={async () => {
-        'use server';
-        await signOut({ redirect: true, redirectTo: '/login' });
-      }}
-    >
-      <button>로그아웃</button>
-    </form>
-  );
+import { signOut } from 'next-auth/react';
+
+export default function Button() {
+  const handleClick = async () => {
+    await signOut();
+  };
+
+  return <button onClick={handleClick}>로그아웃</button>;
 }

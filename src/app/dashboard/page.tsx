@@ -1,4 +1,4 @@
-import { fetchAllUser } from '@/app/lib/data';
+import { fetchAllUser } from '@/app/@lib/data';
 import UserTable from '@/app/ui/dashboard/table';
 
 export default async function Home() {
